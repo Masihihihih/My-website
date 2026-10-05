@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Games — Masih Amirnaseri</title>
+    <meta name="description" content="Interactive pieces and playable experiments by Masih Amirnaseri.">
+    <meta name="theme-color" content="#000000">
+    <link rel="canonical" href="https://masihamirnaseri.com/games.html">
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Space+Grotesk:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&display=swap">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Games — Masih Amirnaseri">
+    <meta property="og:description" content="Interactive pieces and playable experiments.">
+    <meta property="og:url" content="https://masihamirnaseri.com/games.html">
+
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='40' fill='%23a3f0a3'/><circle cx='65' cy='35' r='15' fill='black'/></svg>">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Space+Grotesk:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg: #000;
+            --text: #ffffff;
+            --text-soft: #cfcfcf;
+            --text-muted: #8f8f8f;
+            --line: rgba(255, 255, 255, 0.14);
+            --line-soft: rgba(255, 255, 255, 0.07);
+            --page-accent: #a3d9b8;
+            --font-mono: 'DM Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+            --font-sans: 'Space Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
+            --font-pixel: 'Silkscreen', 'DM Mono', monospace;
+            --ease-out: cubic-bezier(0.22, 0.61, 0.36, 1);
+            --edge: 10vw;
+        }
+
+        html {
+            scrollbar-width: thin;
+            scrollbar-color: transparent transparent;
+            transition: scrollbar-color 0.8s ease;
+        }
+        html::-webkit-scrollbar { width: 5px; height: 5px; }
+        html::-webkit-scrollbar-track { background: transparent; }
+        html::-webkit-scrollbar-thumb { background: transparent; border-radius: 5px; transition: background 0.8s ease; }
+        html.is-scrolling { scrollbar-color: rgba(255, 255, 255, 0.22) transparent; }
+        html.is-scrolling::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.22); }
+
+        html, body {
+            width: 100%;
+            min-height: 100vh;
+            min-height: 100dvh;
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font-mono);
+            font-size: 17px;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: clip;
+        }
+
+        a { color: inherit; }
+        ::selection { background: var(--page-accent); color: #000; }
+
+        .skip-link {
+            position: fixed; top: -100px; left: 1rem; z-index: 300;
+            padding: 0.7rem 1.2rem;
+            background: var(--page-accent); color: #000;
+            font-size: 0.78rem; letter-spacing: 0.12em; text-transform: uppercase;
+            text-decoration: none; border-radius: 4px;
+            transition: top 0.2s;
+        }
+        .skip-link:focus { top: 1rem; outline: 2px solid #fff; outline-offset: 2px; }
+
+        canvas#starfield { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+
+        .site {
+            position: relative; z-index: 1;
+            min-height: 100vh; min-height: 100dvh;
+            display: flex; flex-direction: column;
+        }
+        main { position: relative; z-index: 2; flex: 1; }
+
+        .site-footer {
+            position: relative; z-index: 2;
+            padding: 4rem var(--edge) 3rem;
+            font-family: var(--font-mono);
+            font-size: 0.85rem; letter-spacing: 0.03em;
+            color: var(--text-muted);
+        }
+        .site-footer a {
+            display: inline-block;
+            color: var(--text-soft); text-decoration: none;
+            padding-bottom: 1px;
+            border-bottom: 1px solid transparent;
+            transition: color 0.3s ease, border-color 0.3s ease;
+        }
+        .site-footer a:hover { color: var(--page-accent); border-bottom-color: var(--page-accent); }
+        .site-footer a:focus-visible { outline: 2px solid var(--page-accent); outline-offset: 3px; border-radius: 2px; }
+
+        .js .reveal { opacity: 0; transform: translateY(16px); }
+        .js .reveal.revealed {
+            animation: revealIn 0.7s var(--ease-out) forwards;
+            animation-delay: var(--reveal-delay, 0s);
+        }
+        @keyframes revealIn {
+            from { opacity: 0; transform: translateY(16px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .cat-layout { max-width: 1100px; margin: 0 auto; padding: 3rem 6vw 8rem; }
+
+        .cat-back {
+            position: fixed; top: 2.5rem; left: 2.5rem; z-index: 20;
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 52px; height: 52px; border-radius: 50%;
+            background: transparent; color: #fff;
+            text-decoration: none;
+            transition: background-color 0.35s var(--ease-out), color 0.35s var(--ease-out);
+        }
+        .cat-back svg {
+            display: block; width: 26px; height: 26px;
+            stroke: currentColor; stroke-width: 1.75; fill: none;
+            stroke-linecap: round; stroke-linejoin: round;
+        }
+        .cat-back:hover { background: var(--page-accent); color: #000; }
+        .cat-back:focus-visible { outline: 2px solid var(--page-accent); outline-offset: 3px; }
+
+        .cat-title {
+            font-family: var(--font-pixel);
+            font-weight: 400;
+            font-size: clamp(2rem, 5.5vw, 4.2rem);
+            line-height: 1.08;
+            letter-spacing: 0.02em;
+            color: #fff;
+            margin: 0 0 1.1rem;
+        }
+        .cat-intro {
+            font-family: var(--font-mono);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: var(--text-muted);
+            max-width: 60ch;
+            margin-bottom: 4rem;
+        }
+
+        .cat-list { display: flex; flex-direction: column; gap: 2.6rem; }
+
+        .cat-item {
+            display: grid;
+            grid-template-columns: 130px 1fr;
+            gap: 2.2rem;
+            align-items: start;
+            padding-bottom: 2.6rem;
+            border-bottom: 1px solid var(--line-soft);
+        }
+        .cat-item:last-child { border-bottom: none; padding-bottom: 0; }
+
+        .cat-item-thumb {
+            width: 100%;
+            aspect-ratio: 4 / 5;
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            overflow: hidden;
+            background:
+                repeating-linear-gradient(135deg, rgba(255,255,255,0.04) 0, rgba(255,255,255,0.04) 6px, transparent 6px, transparent 12px),
+                linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.005));
+        }
+        .cat-item-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+        .cat-item-body { min-width: 0; }
+        .cat-item-meta {
+            font-family: var(--font-mono);
+            font-size: 0.68rem; letter-spacing: 0.1em;
+            color: var(--page-accent);
+            margin-bottom: 0.5rem;
+        }
+        .cat-item-title {
+            font-family: var(--font-sans);
+            font-size: 1.15rem; font-weight: 400;
+            color: #fff; line-height: 1.3; letter-spacing: -0.008em;
+            margin-bottom: 0.5rem;
+        }
+        .cat-item-desc {
+            font-size: 0.85rem; line-height: 1.7;
+            color: var(--text-soft);
+            max-width: 62ch;
+        }
+
+        @media (max-width: 900px) {
+            .cat-back { position: static; margin-bottom: 1.5rem; width: 44px; height: 44px; }
+            .cat-back svg { width: 22px; height: 22px; }
+            .cat-layout { padding: 2rem 6vw 6rem; }
+            .cat-title { font-size: clamp(1.6rem, 7.5vw, 2.6rem); margin-bottom: 0.9rem; }
+            .cat-intro { font-size: 1rem; margin-bottom: 3rem; }
+            .cat-list { gap: 2.2rem; }
+            .cat-item { grid-template-columns: 100px 1fr; gap: 1.3rem; padding-bottom: 2.2rem; }
+            .cat-item-title { font-size: 1.05rem; }
+            .cat-item-desc { font-size: 0.82rem; }
+            .site-footer { padding: 3rem 6vw 2rem; font-size: 0.78rem; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-delay: 0s !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                transition-delay: 0s !important;
+            }
+        }
+    </style>
+
+    <script>document.documentElement.classList.add('js');</script>
+</head>
+
+<body>
+<!--
+<a class="skip-link" href="#content">Skip to content</a>
+<canvas id="starfield" aria-hidden="true"></canvas>
+
+<div class="site">
+
+    <main id="content">
+
+        <article class="cat-layout">
+
+            <a href="index.html" class="cat-back" aria-label="Back">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <line x1="20" y1="12" x2="4" y2="12"></line>
+                    <polyline points="11 5 4 12 11 19"></polyline>
+                </svg>
+            </a>
+
+            <h1 class="cat-title">Games</h1>
+            <p class="cat-intro">Interactive things I'm building. Mostly RPGs, mostly in progress.</p>
+
+            <div class="cat-list">
+
+                <article class="cat-item reveal">
+                    <div class="cat-item-thumb" aria-hidden="true"></div>
+                    <div class="cat-item-body">
+                        <div class="cat-item-meta">In progress</div>
+                        <h2 class="cat-item-title">Five mini games</h2>
+                        <p class="cat-item-desc">Five small games about waiting, listening, and looking away.</p>
+                    </div>
+                </article>
+
+                <article class="cat-item reveal" style="--reveal-delay: 0.06s">
+                    <div class="cat-item-thumb" aria-hidden="true"></div>
+                    <div class="cat-item-body">
+                        <div class="cat-item-meta">In progress</div>
+                        <h2 class="cat-item-title">Arcade lobby</h2>
+                        <p class="cat-item-desc">A hub for the smaller games — a room to walk around in before you start playing.</p>
+                    </div>
+                </article>
+
+                <article class="cat-item reveal" style="--reveal-delay: 0.12s">
+                    <div class="cat-item-thumb" aria-hidden="true"></div>
+                    <div class="cat-item-body">
+                        <div class="cat-item-meta">Prototype</div>
+                        <h2 class="cat-item-title">Untitled physics thing</h2>
+                        <p class="cat-item-desc">A toy. You push things. They fall over. It isn't a game yet.</p>
+                    </div>
+                </article>
+
+            </div>
+
+        </article>
+
+    </main>
+
+    <footer class="site-footer">
+        <a href="mailto:hello@masihamirnaseri.com">hello@masihamirnaseri.com</a>
+    </footer>
+
+</div>
+
+<script>
+(function starfield() {
+    const canvas = document.getElementById('starfield');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let w = 0, h = 0, stars = [];
+    function spawn() {
+        return { x: Math.random(), y: Math.random(), r: Math.random() * 0.9 + 0.25, alpha: Math.random() * 0.7 + 0.25 };
+    }
+    function resize() {
+        w = canvas.width = window.innerWidth;
+        h = canvas.height = window.innerHeight;
+        const count = Math.min(260, Math.floor((w * h) / 8000));
+        stars = Array.from({ length: count }, spawn);
+        draw();
+    }
+    function draw() {
+        ctx.clearRect(0, 0, w, h);
+        for (const s of stars) {
+            ctx.fillStyle = 'rgba(255,255,255,' + s.alpha.toFixed(3) + ')';
+            ctx.beginPath();
+            ctx.arc(s.x * w, s.y * h, s.r, 0, Math.PI * 2);
+            ctx.fill();
+        }
+    }
+    window.addEventListener('resize', resize);
+    resize();
+})();
+
+(function setupReveals() {
+    const els = document.querySelectorAll('.reveal');
+    if (!els.length) return;
+    const observer = new IntersectionObserver((entries) => {
+        for (const entry of entries) {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('revealed');
+                observer.unobserve(entry.target);
+            }
+        }
+    }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+    els.forEach(el => observer.observe(el));
+})();
+
+(function minimalScrollbar() {
+    const root = document.documentElement;
+    let timer = null;
+    window.addEventListener('scroll', () => {
+        root.classList.add('is-scrolling');
+        if (timer) clearTimeout(timer);
+        timer = setTimeout(() => root.classList.remove('is-scrolling'), 1000);
+    }, { passive: true });
+})();
+</script>
+
+</body>
+</html>

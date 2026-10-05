@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Writing — Masih Amirnaseri</title>
+    <meta name="description" content="Essays, fiction, and occasional notes by Masih Amirnaseri.">
+    <meta name="theme-color" content="#000000">
+    <link rel="canonical" href="https://masihamirnaseri.com/writing.html">
+
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Writing — Masih Amirnaseri">
+    <meta property="og:description" content="Essays, fiction, and occasional notes.">
+    <meta property="og:url" content="https://masihamirnaseri.com/writing.html">
+
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='40' fill='%23a3f0a3'/><circle cx='65' cy='35' r='15' fill='black'/></svg>">
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Space+Grotesk:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&display=swap">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Space+Grotesk:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        /* Reset */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        /* Colors and fonts. Change here to change everywhere on this page. */
+        :root {
+            --bg: #000;
+            --text: #ffffff;
+            --text-soft: #cfcfcf;
+            --text-muted: #8f8f8f;
+            --text-faint: #6b6b6b;
+            --line: rgba(255, 255, 255, 0.14);
+            --line-soft: rgba(255, 255, 255, 0.07);
+
+            /* Accent color for this page. Writing is cream. */
+            --page-accent: #e8dcc8;
+
+            --font-mono: 'DM Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+            --font-sans: 'Space Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
+            --font-serif: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+
+            --ease-out: cubic-bezier(0.22, 0.61, 0.36, 1);
+            --edge: 10vw;
+        }
+
+        /* Scrollbar */
+        html {
+            scrollbar-width: thin;
+            scrollbar-color: transparent transparent;
+            transition: scrollbar-color 0.8s ease;
+        }
+        html::-webkit-scrollbar { width: 5px; height: 5px; }
+        html::-webkit-scrollbar-track { background: transparent; }
+        html::-webkit-scrollbar-thumb {
+            background: transparent;
+            border-radius: 5px;
+            transition: background 0.8s ease;
+        }
+        html.is-scrolling { scrollbar-color: rgba(255, 255, 255, 0.22) transparent; }
+        html.is-scrolling::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.22);
+        }
+
+        /* Body */
+        html, body {
+            width: 100%;
+            min-height: 100vh;
+            min-height: 100dvh;
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font-mono);
+            font-size: 17px;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: clip;
+        }
+
+        a { color: inherit; }
+        ::selection { background: var(--page-accent); color: #000; }
+
+        .skip-link {
+            position: fixed;
+            top: -100px;
+            left: 1rem;
+            z-index: 300;
+            padding: 0.7rem 1.2rem;
+            background: var(--page-accent);
+            color: #000;
+            font-size: 0.78rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: top 0.2s;
+        }
+        .skip-link:focus { top: 1rem; outline: 2px solid #fff; outline-offset: 2px; }
+
+        canvas#starfield {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .site {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        main { position: relative; z-index: 2; flex: 1; }
+
+        /* Footer */
+        .site-footer {
+            position: relative;
+            z-index: 2;
+            padding: 4rem var(--edge) 3rem;
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            letter-spacing: 0.03em;
+            color: var(--text-muted);
+        }
+        .site-footer a {
+            display: inline-block;
+            color: var(--text-soft);
+            text-decoration: none;
+            padding-bottom: 1px;
+            border-bottom: 1px solid transparent;
+            transition: color 0.3s ease, border-color 0.3s ease;
+        }
+        .site-footer a:hover {
+            color: var(--page-accent);
+            border-bottom-color: var(--page-accent);
+        }
+        .site-footer a:focus-visible {
+            outline: 2px solid var(--page-accent);
+            outline-offset: 3px;
+            border-radius: 2px;
+        }
+
+        /* Reveal on scroll */
+        .js .reveal { opacity: 0; transform: translateY(16px); }
+        .js .reveal.revealed {
+            animation: revealIn 0.7s var(--ease-out) forwards;
+            animation-delay: var(--reveal-delay, 0s);
+        }
+        @keyframes revealIn {
+            from { opacity: 0; transform: translateY(16px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Page layout */
+        .cat-layout {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 3rem 6vw 8rem;
+        }
+
+        /* Back button. Fixed to top-left. White arrow by default,
+           fills with the page color on hover, arrow flips to black. */
+        .cat-back {
+            position: fixed;
+            top: 2.5rem;
+            left: 2.5rem;
+            z-index: 20;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: transparent;
+            color: #fff;
+            text-decoration: none;
+            transition: background-color 0.35s var(--ease-out), color 0.35s var(--ease-out);
+        }
+        .cat-back svg {
+            display: block;
+            width: 26px;
+            height: 26px;
+            stroke: currentColor;
+            stroke-width: 1.75;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        .cat-back:hover {
+            background: var(--page-accent);
+            color: #000;
+        }
+        .cat-back:focus-visible {
+            outline: 2px solid var(--page-accent);
+            outline-offset: 3px;
+        }
+
+        /* Page title. Writing uses an italic serif. */
+        .cat-title {
+            font-family: var(--font-serif);
+            font-style: italic;
+            font-weight: 400;
+            font-size: clamp(2.8rem, 7vw, 5.5rem);
+            line-height: 0.98;
+            letter-spacing: -0.02em;
+            color: #fff;
+            margin: 0 0 1.1rem;
+        }
+
+        /* Intro line under the title. Serif, not italic. */
+        .cat-intro {
+            font-family: var(--font-serif);
+            font-size: clamp(1.05rem, 1.5vw, 1.25rem);
+            line-height: 1.6;
+            color: var(--text-muted);
+            max-width: 60ch;
+            margin-bottom: 4rem;
+        }
+
+        /* List of entries */
+        .cat-list {
+            display: flex;
+            flex-direction: column;
+            gap: 2.6rem;
+        }
+
+        /* One entry. Thumbnail on the left, text on the right. */
+        .cat-item {
+            display: grid;
+            grid-template-columns: 130px 1fr;
+            gap: 2.2rem;
+            align-items: start;
+            padding-bottom: 2.6rem;
+            border-bottom: 1px solid var(--line-soft);
+        }
+        .cat-item:last-child { border-bottom: none; padding-bottom: 0; }
+
+        /* Thumbnail. Replace with <img src="..."> when you have images. */
+        .cat-item-thumb {
+            width: 100%;
+            aspect-ratio: 4 / 5;
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            overflow: hidden;
+            background:
+                repeating-linear-gradient(135deg,
+                    rgba(255, 255, 255, 0.04) 0,
+                    rgba(255, 255, 255, 0.04) 6px,
+                    transparent 6px,
+                    transparent 12px),
+                linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.005));
+        }
+        .cat-item-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .cat-item-body { min-width: 0; }
+
+        /* Small label above the item title (date, status, etc.) */
+        .cat-item-meta {
+            font-family: var(--font-mono);
+            font-size: 0.68rem;
+            letter-spacing: 0.1em;
+            color: var(--page-accent);
+            margin-bottom: 0.5rem;
+        }
+
+        .cat-item-title {
+            font-family: var(--font-sans);
+            font-size: 1.15rem;
+            font-weight: 400;
+            color: #fff;
+            line-height: 1.3;
+            letter-spacing: -0.008em;
+            margin-bottom: 0.5rem;
+        }
+
+        .cat-item-desc {
+            font-size: 0.85rem;
+            line-height: 1.7;
+            color: var(--text-soft);
+            max-width: 62ch;
+        }
+
+        /* Mobile */
+        @media (max-width: 900px) {
+            .cat-back {
+                position: static;
+                margin-bottom: 1.5rem;
+                width: 44px;
+                height: 44px;
+            }
+            .cat-back svg { width: 22px; height: 22px; }
+            .cat-layout { padding: 2rem 6vw 6rem; }
+            .cat-title { font-size: clamp(2.4rem, 11vw, 3.6rem); margin-bottom: 0.9rem; }
+            .cat-intro { font-size: 1rem; margin-bottom: 3rem; }
+            .cat-list { gap: 2.2rem; }
+            .cat-item {
+                grid-template-columns: 100px 1fr;
+                gap: 1.3rem;
+                padding-bottom: 2.2rem;
+            }
+            .cat-item-title { font-size: 1.05rem; }
+            .cat-item-desc { font-size: 0.82rem; }
+            .site-footer { padding: 3rem 6vw 2rem; font-size: 0.78rem; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-delay: 0s !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                transition-delay: 0s !important;
+            }
+        }
+    </style>
+
+    <script>document.documentElement.classList.add('js');</script>
+</head>
+
+<body>
+
+<a class="skip-link" href="#content">Skip to content</a>
+<canvas id="starfield" aria-hidden="true"></canvas>
+
+<div class="site">
+
+    <main id="content">
+
+        <article class="cat-layout">
+
+            <!-- Back button -->
+            <a href="index.html" class="cat-back" aria-label="Back">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <line x1="20" y1="12" x2="4" y2="12"></line>
+                    <polyline points="11 5 4 12 11 19"></polyline>
+                </svg>
+            </a>
+
+            <!-- Page title and intro -->
+            <h1 class="cat-title">Writings</h1>
+
+            <!-- Entries. Duplicate a .cat-item block for each new piece. -->
+            <div class="cat-list">
+
+                <article class="cat-item reveal">
+                    <div class="cat-item-thumb" aria-hidden="true"></div>
+                    <div class="cat-item-body">
+                        <div class="cat-item-meta">Jan 2024</div>
+                        <h2 class="cat-item-title">On slowness</h2>
+                        <p class="cat-item-desc">A short essay about doing one thing at a time, and about the way a sentence can hold a room still.</p>
+                    </div>
+                </article>
+
+                <article class="cat-item reveal" style="--reveal-delay: 0.06s">
+                    <div class="cat-item-thumb" aria-hidden="true"></div>
+                    <div class="cat-item-body">
+                        <div class="cat-item-meta">Nov 2025</div>
+                        <h2 class="cat-item-title">The Limits of Control</h2>
+                        <p class="cat-item-desc">A Persian essay on the movie by Jim Jarmusch.</p>
+                    </div>
+                </article>
+
+                <article class="cat-item reveal" style="--reveal-delay: 0.12s">
+                    <div class="cat-item-thumb" aria-hidden="true"></div>
+                    <div class="cat-item-body">
+                        <div class="cat-item-meta">Feb 2025</div>
+                        <h2 class="cat-item-title">Everything happens and I am sleepless</h2>
+                        <p class="cat-item-desc">Winter wind is not cold as it should be and an early spring sounds like a closer drought.</p>
+                    </div>
+                </article>
+
+            </div>
+
+        </article>
+
+    </main>
+
+    <footer class="site-footer">
+        <a href="mailto:hello@masihamirnaseri.com">hello@masihamirnaseri.com</a>
+    </footer>
+
+</div>
+
+<script>
+// Starfield
+(function starfield() {
+    const canvas = document.getElementById('starfield');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let w = 0, h = 0;
+    let stars = [];
+
+    function spawn() {
+        return {
+            x: Math.random(), y: Math.random(),
+            r: Math.random() * 0.9 + 0.25,
+            alpha: Math.random() * 0.7 + 0.25
+        };
+    }
+    function resize() {
+        w = canvas.width = window.innerWidth;
+        h = canvas.height = window.innerHeight;
+        const count = Math.min(260, Math.floor((w * h) / 8000));
+        stars = Array.from({ length: count }, spawn);
+        draw();
+    }
+    function draw() {
+        ctx.clearRect(0, 0, w, h);
+        for (const s of stars) {
+            ctx.fillStyle = 'rgba(255,255,255,' + s.alpha.toFixed(3) + ')';
+            ctx.beginPath();
+            ctx.arc(s.x * w, s.y * h, s.r, 0, Math.PI * 2);
+            ctx.fill();
+        }
+    }
+    window.addEventListener('resize', resize);
+    resize();
+})();
+
+// Reveal on scroll
+(function setupReveals() {
+    const els = document.querySelectorAll('.reveal');
+    if (!els.length) return;
+    const observer = new IntersectionObserver((entries) => {
+        for (const entry of entries) {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('revealed');
+                observer.unobserve(entry.target);
+            }
+        }
+    }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+    els.forEach(el => observer.observe(el));
+})();
+
+// Scrollbar fade
+(function minimalScrollbar() {
+    const root = document.documentElement;
+    let timer = null;
+    window.addEventListener('scroll', () => {
+        root.classList.add('is-scrolling');
+        if (timer) clearTimeout(timer);
+        timer = setTimeout(() => root.classList.remove('is-scrolling'), 1000);
+    }, { passive: true });
+})();
+</script>
+
+</body>
+</html>
